@@ -4,6 +4,7 @@ let memory = []
 let canvas = null;
 
 function initMemory(){
+    memory = [];
     let memorySize = document.getElementById("memorySize").value;
     for (let i = 0; i < memorySize; i++){
         memory.push(0);
@@ -48,7 +49,7 @@ function runLine() {
         parameters[parameterIndex] = parseInt(parameters[parameterIndex]);
     }
     if (command === "add"){
-        memory[parameters[3]] = memory[parameters[1]] + memory[parameters[2]];
+        memory[parameters[ 3]] = memory[parameters[1]] + memory[parameters[2]];
     }
     if (command === "sub"){
         memory[parameters[3]] = memory[parameters[1]] - memory[parameters[2]];
@@ -82,6 +83,11 @@ function runLine() {
     if (command === "write"){
         memory[memory[parameters[1]]] = memory[parameters[2]];
     }
-    drawMemory();
     programCounter++;
+    drawMemory();
+}
+
+function resetProgram() {
+    programCounter = 0;
+    drawMemory();
 }
