@@ -13,7 +13,7 @@ function initMemory(){
     drawMemory();
 }
 
-function submitProgram(){
+function loadProgramFromTextarea(){
     program = document.getElementById("program").value;
 }
 
@@ -42,6 +42,7 @@ function drawMemory() {
 }
 
 function runLine() {
+    loadProgramFromTextarea()
     line = program.split('\n')[programCounter];
     const parameters = line.split(' ');
     const command = parameters[0];
