@@ -45,6 +45,7 @@ function runLine() {
     line = program.split('\n')[programCounter];
     const parameters = line.split(' ');
     const command = parameters[0];
+    programCounter++;
     for (const parameterIndex in parameters){
         parameters[parameterIndex] = parseInt(parameters[parameterIndex]);
     }
@@ -83,7 +84,6 @@ function runLine() {
     if (command === "write"){
         memory[memory[parameters[1]]] = memory[parameters[2]];
     }
-    programCounter++;
     drawMemory();
 }
 
