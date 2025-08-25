@@ -11,7 +11,7 @@
             --panel: #151820;
             --muted: #9aa4ad;
             --text: #e6e9ee;
-            --accent: #2d7dff;
+            --accent: #0060ff;
             --border: #282d39;
         }
 
@@ -22,7 +22,10 @@
         html, body {
             height: 100%;
         }
-
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
         body {
             margin: 0;
             background: var(--bg);
@@ -139,6 +142,9 @@
                 grid-template-columns: 1fr;
             }
         }
+        .error{
+            color: red;
+        }
     </style>
     <script src="interpreter.js"></script>
 </head>
@@ -158,10 +164,6 @@
                 <button class="ex-btn" type="button" onclick="loadExercise(2)">#2</button>
                 <button class="ex-btn" type="button" onclick="loadExercise(3)">#3</button>
                 <button class="ex-btn" type="button" onclick="loadExercise(4)">#4</button>
-                <button class="ex-btn" type="button" onclick="loadExercise(5)">#5</button>
-                <button class="ex-btn" type="button" onclick="loadExercise(6)">#6</button>
-                <button class="ex-btn" type="button" onclick="loadExercise(7)">#7</button>
-                <button class="ex-btn" type="button" onclick="loadExercise(8)">#8</button>
             </div>
         </section>
 
@@ -172,10 +174,12 @@
         <section class="panel">
             <label for="program">Program:</label>
             <textarea id="program" placeholder="Write your program here..." rows="20"></textarea>
+            <p class="error" id="error"></p>
             <div class="controls">
                 <button onclick="runLine()">Run Line</button>
                 <button onclick="resetProgram()">Reset Program</button>
-                <button onclick="initMemory()">Initialize memory</button>
+                <button onclick="initMemory()">Reset memory</button>
+                <p id="pcDisplay"></p>
             </div>
             <canvas width="400" height="400" id="memoryCanvas"></canvas>
         </section>

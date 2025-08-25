@@ -3,17 +3,17 @@ let program = ""
 let memory = []
 let canvas = null;
 
-function initMemory(){
+function initMemory() {
     memory = [];
-     let memorySize = 100// document.getElementById("memorySize").value;
-    for (let i = 0; i < memorySize; i++){
+    let memorySize = 100// document.getElementById("memorySize").value;
+    for (let i = 0; i < memorySize; i++) {
         memory.push(0);
     }
     canvas = document.getElementById("memoryCanvas");
     drawMemory();
 }
 
-function loadProgramFromTextarea(){
+function loadProgramFromTextarea() {
     program = document.getElementById("program").value;
 }
 
@@ -46,49 +46,53 @@ function drawMemory() {
 
 function runLine() {
     loadProgramFromTextarea()
+
     const lines = program.split('\n');
-    if (programCounter < 0 || programCounter >= lines.length) { drawMemory(); return; }
     const line = lines[programCounter];
+    programCounter++;
+    drawMemory()
+
+    if (programCounter < 0 || programCounter >= lines.length) {
+        return;
+    }
+    if (line.startsWith("#")) {
+        return;
+    }
+
     const parameters = line.split(' ');
     const command = parameters[0];
-    programCounter++;
-    for (const parameterIndex in parameters){
+
+    for (const parameterIndex in parameters) {
         parameters[parameterIndex] = parseInt(parameters[parameterIndex]);
     }
-    if (command === "add"){
-        memory[parameters[ 3]] = memory[parameters[1]] + memory[parameters[2]];
-    }
-    if (command === "sub"){
+    if (command === "add") {
+        memory[parameters[3]] = memory[parameters[1]] + memory[parameters[2]];
+    } else if (command === "sub") {
         memory[parameters[3]] = memory[parameters[1]] - memory[parameters[2]];
-    }
-    if (command === "mul"){
+    } else if (command === "mul") {
         memory[parameters[3]] = memory[parameters[1]] * memory[parameters[2]];
-    }
-    if (command === "div"){
+    } else if (command === "div") {
         memory[parameters[3]] = Math.floor(memory[parameters[1]] / memory[parameters[2]]);
         memory[parameters[4]] = memory[parameters[1]] % memory[parameters[2]];
-    }
-    if (command === "jmp"){
+    } else if (command === "jmp") {
         programCounter = parameters[1];
-    }
-    if (command === "eq") {
+    } else if (command === "eq") {
         if (memory[parameters[1]] === memory[parameters[2]]) {
             programCounter = parameters[3];
         }
-    }
-    if (command === "lt") {
+    } else if (command === "lt") {
         if (memory[parameters[1]] < memory[parameters[2]]) {
             programCounter = parameters[3];
         }
-    }
-    if (command === "set"){
+    } else if (command === "set") {
         memory[parameters[1]] = parameters[2];
-    }
-    if (command === "read"){
+    } else if (command === "read") {
         memory[parameters[2]] = memory[memory[parameters[1]]];
-    }
-    if (command === "write"){
+    } else if (command === "write") {
         memory[memory[parameters[1]]] = memory[parameters[2]];
+    } else {
+        setError("Unknown command: " + command);
+        return;
     }
     drawMemory();
 }
@@ -99,16 +103,24 @@ function resetProgram() {
 }
 
 // Load exercise description from a text file (e.g., 1.txt) and display in the center panel
-async function loadExercise(n){
+async function loadExercise(n) {
     const el = document.getElementById('exerciseContent');
     if (!el) return;
-    try{
+    try {
         el.textContent = 'Loading exercise #' + n + '...';
         const res = await fetch(String(n) + '.txt');
 
 
         el.innerHTML = marked.parse(await res.text());
-    }catch(err){
+    } catch (err) {
         el.textContent = 'Could not load exercise ' + n + '.txt\n' + (err?.message || String(err));
     }
 }
+
+function setError(error) {
+    const el = document.getElementById('error');
+    if (!el) return;
+    el.textContent = error;
+}
+
+window.onload
