@@ -1,0 +1,8 @@
+Exercise #3
+
+Goal: Practice multiplication and division with remainder.
+
+Task:
+- Put two numbers into memory[0] and memory[1].
+- Compute product into memory[2].
+- Do integer division memory[0] / memory[1] into memory[3] and remainder into memory[4].

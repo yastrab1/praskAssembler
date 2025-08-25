@@ -1,0 +1,9 @@
+Exercise #4
+
+Goal: Indirect addressing with read/write.
+
+Task:
+- Store address 5 in memory[0].
+- Store value 42 in memory[1].
+- Use write to store 42 into memory[memory[0]] (i.e., memory[5]).
+- Then use read to read it back into memory[2].

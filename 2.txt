@@ -1,0 +1,7 @@
+Exercise #2
+
+Goal: Learn conditional jumps (eq, lt) and program counter flow.
+
+Task:
+- If memory[0] == memory[1], jump to line that sets memory[2] = 1, else set memory[2] = 0.
+- Try changing initial values to test both paths.

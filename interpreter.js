@@ -5,7 +5,7 @@ let canvas = null;
 
 function initMemory(){
     memory = [];
-    let memorySize = document.getElementById("memorySize").value;
+     let memorySize = 100// document.getElementById("memorySize").value;
     for (let i = 0; i < memorySize; i++){
         memory.push(0);
     }
@@ -20,7 +20,7 @@ function loadProgramFromTextarea(){
 function drawMemory() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const cellSize = 20;
+    const cellSize = 40;
     const cellsPerRow = Math.floor(canvas.width / cellSize);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -29,21 +29,26 @@ function drawMemory() {
         const x = (i % cellsPerRow) * cellSize;
         const y = Math.floor(i / cellsPerRow) * cellSize;
 
-        ctx.strokeStyle = '#000';
+        ctx.strokeStyle = '#3a4254';
         ctx.strokeRect(x, y, cellSize, cellSize);
 
-        ctx.fillStyle = '#000';
-        ctx.font = '12px Arial';
+        ctx.fillStyle = '#e6e9ee';
+        ctx.font = '18px ui-monospace, monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(memory[i].toString(), x + cellSize / 2, y + cellSize / 2);
+        ctx.fillText((memory[i] ?? 0).toString(), x + cellSize / 2, y + cellSize / 2);
     }
-    ctx.fillText(programCounter.toString(), 400, 400)
+
+    // Update PC display in UI as well
+    const pcEl = document.getElementById('pcDisplay');
+    if (pcEl) pcEl.textContent = programCounter.toString();
 }
 
 function runLine() {
     loadProgramFromTextarea()
-    line = program.split('\n')[programCounter];
+    const lines = program.split('\n');
+    if (programCounter < 0 || programCounter >= lines.length) { drawMemory(); return; }
+    const line = lines[programCounter];
     const parameters = line.split(' ');
     const command = parameters[0];
     programCounter++;
@@ -91,4 +96,19 @@ function runLine() {
 function resetProgram() {
     programCounter = 0;
     drawMemory();
+}
+
+// Load exercise description from a text file (e.g., 1.txt) and display in the center panel
+async function loadExercise(n){
+    const el = document.getElementById('exerciseContent');
+    if (!el) return;
+    try{
+        el.textContent = 'Loading exercise #' + n + '...';
+        const res = await fetch(String(n) + '.txt');
+
+
+        el.innerHTML = marked.parse(await res.text());
+    }catch(err){
+        el.textContent = 'Could not load exercise ' + n + '.txt\n' + (err?.message || String(err));
+    }
 }

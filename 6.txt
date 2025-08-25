@@ -1,0 +1,6 @@
+Exercise #6
+
+Goal: Compare and branch.
+
+Task:
+- Compare two numbers; if a < b set memory[2] = 1 else memory[2] = 0 using lt and jumps.
