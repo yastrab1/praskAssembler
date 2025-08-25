@@ -1,0 +1,3 @@
+# Úloha 3 - delenie so zvyškom
+
+Na registri 0 dostaneš číslo a, na registri 1 dostaneš číslo b, do registru 10 napíš výsledok a/b a do 11 registru ich zvyšok

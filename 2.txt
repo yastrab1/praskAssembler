@@ -1,0 +1,3 @@
+# Úloha 2 - násobenie
+
+Na vstupe dostaneš v registri 0 prvé číslo a v registri 1 druhé číslo. Do registru 10 vypíš výsledok ich vynásobenia

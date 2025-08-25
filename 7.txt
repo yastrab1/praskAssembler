@@ -1,0 +1,6 @@
+Exercise #7
+
+Goal: Memory copy using indirect addressing.
+
+Task:
+- Copy value from address A to address B using read/write with pointers.

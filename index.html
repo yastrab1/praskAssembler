@@ -2,16 +2,189 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Assembler prask</title>
+    <title>Assembler Exercise</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <style>
+        :root {
+            --bg: #0f1115;
+            --panel: #151820;
+            --muted: #9aa4ad;
+            --text: #e6e9ee;
+            --accent: #0060ff;
+            --border: #282d39;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .wrap {
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 8px 12px;
+        }
+
+        .title {
+            color: var(--muted);
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns:10% 1fr 50%;
+            gap: 12px;
+            padding: 12px;
+            min-height: 0;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            gap: 10px;
+        }
+
+        .controls {
+            color: var(--muted);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type=number], textarea {
+            width: 100%;
+            background: #0f131a;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px;
+            outline: none;
+        }
+
+        textarea {
+            flex: 1;
+            resize: vertical;
+            min-height: 220px;
+        }
+
+        .btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #1d2330;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            border-color: #3a4254;
+        }
+
+        .pc {
+            color: var(--muted);
+        }
+
+        canvas {
+            display: block;
+            height: auto;
+            background: #0f131a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .ex-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .ex-btn {
+            text-align: left;
+        }
+
+        .info {
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+            padding: 8px 12px;
+        }
+
+        #exerciseContent {
+            white-space: pre-wrap;
+        }
+
+        @media (max-width: 1000px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+        }
+        .error{
+            color: red;
+        }
+    </style>
     <script src="interpreter.js"></script>
 </head>
 <body>
-<label for="program">Kod:</label><textarea id="program" cols="80" rows="20"></textarea><br>
-<label for="memorySize">Enter memsize</label><input type="number" id="memorySize" value="100">
-<button id="initMem" type="button" onclick="initMemory()">Initialize memory</button><br>
-<button id="runLine" type="button" onclick="runLine()">Run line</button>
-<button id="resetProgram" type="button" onclick="resetProgram()">Reset Program</button><br>
-<canvas id="memoryCanvas" width="500px" height="500px"></canvas>
+<div class="wrap">
+    <header>
+        <div class="title">Assembler Exercise</div>
+    </header>
+    <div class="info">Select an exercise on the left. The exercise text appears in the center. Write your program on the
+        right (above memory), initialize memory, and step through lines.
+    </div>
+    <div class="main">
+        <!-- Left: Exercise list -->
+        <section class="panel">
+            <div class="ex-list" aria-label="exercises">
+                <button class="ex-btn" type="button" onclick="loadExercise(1)">#1</button>
+                <button class="ex-btn" type="button" onclick="loadExercise(2)">#2</button>
+                <button class="ex-btn" type="button" onclick="loadExercise(3)">#3</button>
+                <button class="ex-btn" type="button" onclick="loadExercise(4)">#4</button>
+            </div>
+        </section>
 
+        <!-- Center: Exercise text -->
+        <section class="panel">
+            <div id="exerciseContent">Choose an exercise (#1–#8) to view its description here.</div>
+        </section>
+        <section class="panel">
+            <label for="program">Program:</label>
+            <textarea id="program" placeholder="Write your program here..." rows="20"></textarea>
+            <p class="error" id="error"></p>
+            <div class="controls">
+                <button onclick="runLine()">Run Line</button>
+                <button onclick="resetProgram()">Reset Program</button>
+                <button onclick="initMemory()">Reset memory</button>
+                <p id="pcDisplay"></p>
+            </div>
+            <canvas width="400" height="400" id="memoryCanvas"></canvas>
+        </section>
+
+    </div>
+</div>
 </body>
 </html>
