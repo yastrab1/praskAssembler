@@ -1,8 +1,3 @@
-Exercise #3
+# Úloha 3 - delenie so zvyškom
 
-Goal: Practice multiplication and division with remainder.
-
-Task:
-- Put two numbers into memory[0] and memory[1].
-- Compute product into memory[2].
-- Do integer division memory[0] / memory[1] into memory[3] and remainder into memory[4].
+Na registri 0 dostaneš číslo a, na registri 1 dostaneš číslo b, do registru 10 napíš výsledok a/b a do 11 registru ich zvyšok
