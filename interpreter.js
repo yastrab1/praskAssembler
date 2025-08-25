@@ -39,8 +39,11 @@ function drawMemory() {
         }
         if (writtenMemoryCellsThisLine.includes(i)){
             ctx.strokeStyle = '#0000ff';
-
             width = 5;
+        }
+        if (writtenMemoryCellsThisLine.includes(i) && readMemoryCellsThisLine.includes(i)){
+            ctx.strokeStyle = '#ff00ff';
+            width = 5
         }
         ctx.lineWidth = width;
         ctx.strokeRect(x, y, cellSize, cellSize,width);
@@ -144,4 +147,27 @@ function setError(error) {
     el.textContent = error;
 }
 
-window.onload
+function saveProgram() {
+    let programContainer = document.getElementById("programContainer");
+    let programTextArea = document.getElementById("program");
+    program = programTextArea.value;
+    let programLines = program.split('\n');
+    programContainer.children[0].remove()
+    for(const line of programLines){
+        programContainer.appendChild(document.createElement("p")).textContent = line;
+    }
+
+}
+function editProgram(){
+    let programContainer = document.getElementById("programContainer");
+    for (const children of programContainer.children){
+        children.remove()
+    }
+
+    let textarea = document.createElement("textarea");
+    textarea.id = "program";
+    textarea.value = program;
+    textarea.rows = 20;
+    textarea.placeholder = "Enter your program here...";
+    programContainer.appendChild(textarea);
+}

@@ -22,10 +22,12 @@
         html, body {
             height: 100%;
         }
+
         a {
             color: var(--accent);
             text-decoration: none;
         }
+
         body {
             margin: 0;
             background: var(--bg);
@@ -142,7 +144,8 @@
                 grid-template-columns: 1fr;
             }
         }
-        .error{
+
+        .error {
             color: red;
         }
     </style>
@@ -173,12 +176,16 @@
         </section>
         <section class="panel">
             <label for="program">Program:</label>
-            <textarea id="program" placeholder="Write your program here..." rows="20"></textarea>
+            <div id="programContainer">
+                <textarea id="program" placeholder="Write your program here..." rows="20"></textarea>
+            </div>
             <p class="error" id="error"></p>
             <div class="controls">
                 <button onclick="runLine()">Run Line</button>
                 <button onclick="resetProgram()">Reset Program</button>
                 <button onclick="initMemory()">Reset memory</button>
+                <button onclick="saveProgram()">Save program</button>
+                <button onclick="editProgram()">Edit program</button>
                 <p id="pcDisplay"></p>
             </div>
             <canvas width="400" height="400" id="memoryCanvas"></canvas>
