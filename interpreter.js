@@ -2,6 +2,10 @@ let programCounter = 0;
 let program = ""
 let memory = []
 let canvas = null;
+let labels = {}
+const cellSize = 40;
+let readMemoryCellsThisLine = []
+let writtenMemoryCellsThisLine = []
 
 function initMemory() {
     memory = [];
@@ -20,9 +24,7 @@ function loadProgramFromTextarea() {
 function drawMemory() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const cellSize = 40;
     const cellsPerRow = Math.floor(canvas.width / cellSize);
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < memory.length; i++) {
@@ -30,7 +32,18 @@ function drawMemory() {
         const y = Math.floor(i / cellsPerRow) * cellSize;
 
         ctx.strokeStyle = '#3a4254';
-        ctx.strokeRect(x, y, cellSize, cellSize);
+        let width = 1
+        if (readMemoryCellsThisLine.includes(i)) {
+            ctx.strokeStyle = '#00ff00';
+            width = 5;
+        }
+        if (writtenMemoryCellsThisLine.includes(i)){
+            ctx.strokeStyle = '#0000ff';
+
+            width = 5;
+        }
+        ctx.lineWidth = width;
+        ctx.strokeRect(x, y, cellSize, cellSize,width);
 
         ctx.fillStyle = '#e6e9ee';
         ctx.font = '18px ui-monospace, monospace';
@@ -44,13 +57,21 @@ function drawMemory() {
     if (pcEl) pcEl.textContent = programCounter.toString();
 }
 
+function read(address) {
+    readMemoryCellsThisLine.push(address);
+    return memory[address];
+}
+
+function write(address, value) {
+    writtenMemoryCellsThisLine.push(address);
+    memory[address] = value;
+}
+
 function runLine() {
     loadProgramFromTextarea()
 
     const lines = program.split('\n');
     const line = lines[programCounter];
-    programCounter++;
-    drawMemory()
 
     if (programCounter < 0 || programCounter >= lines.length) {
         return;
@@ -66,35 +87,35 @@ function runLine() {
         parameters[parameterIndex] = parseInt(parameters[parameterIndex]);
     }
     if (command === "add") {
-        memory[parameters[3]] = memory[parameters[1]] + memory[parameters[2]];
+        write(parameters[3], read(parameters[1]) + read(parameters[2]));
     } else if (command === "sub") {
-        memory[parameters[3]] = memory[parameters[1]] - memory[parameters[2]];
-    } else if (command === "mul") {
-        memory[parameters[3]] = memory[parameters[1]] * memory[parameters[2]];
-    } else if (command === "div") {
-        memory[parameters[3]] = Math.floor(memory[parameters[1]] / memory[parameters[2]]);
-        memory[parameters[4]] = memory[parameters[1]] % memory[parameters[2]];
+        write(parameters[3], read(parameters[1]) - read(parameters[2]));
     } else if (command === "jmp") {
-        programCounter = parameters[1];
+        programCounter = labels[parameters[1]];
     } else if (command === "eq") {
-        if (memory[parameters[1]] === memory[parameters[2]]) {
-            programCounter = parameters[3];
+        if (read(parameters[1]) === read(parameters[2])) {
+            programCounter = labels[parameters[3]];
         }
     } else if (command === "lt") {
-        if (memory[parameters[1]] < memory[parameters[2]]) {
-            programCounter = parameters[3];
+        if (read(parameters[1]) < read(parameters[2])) {
+            programCounter = labels[parameters[3]];
         }
     } else if (command === "set") {
-        memory[parameters[1]] = parameters[2];
+        write(parameters[1], parameters[2]);
     } else if (command === "read") {
-        memory[parameters[2]] = memory[memory[parameters[1]]];
+        write(parameters[2], read(read(parameters[1])));
     } else if (command === "write") {
-        memory[memory[parameters[1]]] = memory[parameters[2]];
+        write(read(parameters[1], read(parameters[2])));
+    } else if (command === "label") {
+        labels[parameters[1]] = programCounter;
     } else {
         setError("Unknown command: " + command);
         return;
     }
+    programCounter++;
     drawMemory();
+    writtenMemoryCellsThisLine = []
+    readMemoryCellsThisLine = []
 }
 
 function resetProgram() {
