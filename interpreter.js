@@ -6,6 +6,7 @@ let labels = {}
 const cellSize = 40;
 let readMemoryCellsThisLine = []
 let writtenMemoryCellsThisLine = []
+let selectedCell = null;
 
 function initMemory() {
     memory = [];
@@ -14,12 +15,12 @@ function initMemory() {
         memory.push(0);
     }
     canvas = document.getElementById("memoryCanvas");
+    writtenMemoryCellsThisLine = []
+    readMemoryCellsThisLine = []
+    selectedCell = null;
     drawMemory();
 }
 
-function loadProgramFromTextarea() {
-    program = document.getElementById("program").value;
-}
 
 function drawMemory() {
     if (!canvas) return;
@@ -37,22 +38,36 @@ function drawMemory() {
             ctx.strokeStyle = '#00ff00';
             width = 5;
         }
-        if (writtenMemoryCellsThisLine.includes(i)){
+        if (writtenMemoryCellsThisLine.includes(i)) {
             ctx.strokeStyle = '#0000ff';
             width = 5;
         }
-        if (writtenMemoryCellsThisLine.includes(i) && readMemoryCellsThisLine.includes(i)){
+        if (writtenMemoryCellsThisLine.includes(i) && readMemoryCellsThisLine.includes(i)) {
             ctx.strokeStyle = '#ff00ff';
             width = 5
         }
+        if (selectedCell === i) {
+            ctx.strokeStyle = '#00ff00';
+            width = 5;
+        }
         ctx.lineWidth = width;
-        ctx.strokeRect(x, y, cellSize, cellSize,width);
+        ctx.strokeRect(x, y, cellSize, cellSize, width);
 
         ctx.fillStyle = '#e6e9ee';
         ctx.font = '18px ui-monospace, monospace';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText((memory[i] ?? 0).toString(), x + cellSize / 2, y + cellSize / 2);
+
+        const programContainer = document.getElementById("programContainer");
+        for (const children of programContainer.children) {
+            if (children.tagName.toLowerCase() === "div") {
+                children.removeAttribute("class")
+            }
+        }
+        if (programCounter < programContainer.children.length) {
+            programContainer.children[programCounter].className = "programLineHighlight"
+        }
     }
 
     // Update PC display in UI as well
@@ -71,8 +86,6 @@ function write(address, value) {
 }
 
 function runLine() {
-    loadProgramFromTextarea()
-
     const lines = program.split('\n');
     const line = lines[programCounter];
 
@@ -93,7 +106,11 @@ function runLine() {
         write(parameters[3], read(parameters[1]) + read(parameters[2]));
     } else if (command === "sub") {
         write(parameters[3], read(parameters[1]) - read(parameters[2]));
-    } else if (command === "jmp") {
+    }
+        // else if (command === "mul") {
+        //     write(parameters[3], read(parameters[1]) * read(parameters[2]));
+    // }
+    else if (command === "jmp") {
         programCounter = labels[parameters[1]];
     } else if (command === "eq") {
         if (read(parameters[1]) === read(parameters[2])) {
@@ -106,9 +123,11 @@ function runLine() {
     } else if (command === "set") {
         write(parameters[1], parameters[2]);
     } else if (command === "read") {
-        write(parameters[2], read(read(parameters[1])));
+        write(read(read(parameters[1])), parameters[2],);
     } else if (command === "write") {
-        write(read(parameters[1], read(parameters[2])));
+        write(read(parameters[1]), read(parameters[2]));
+        console.log(read(parameters[1]));
+        console.log(read(parameters[2]));
     } else if (command === "label") {
         labels[parameters[1]] = programCounter;
     } else {
@@ -119,6 +138,7 @@ function runLine() {
     drawMemory();
     writtenMemoryCellsThisLine = []
     readMemoryCellsThisLine = []
+    selectedCell = null;
 }
 
 function resetProgram() {
@@ -152,17 +172,31 @@ function saveProgram() {
     let programTextArea = document.getElementById("program");
     program = programTextArea.value;
     let programLines = program.split('\n');
-    programContainer.children[0].remove()
-    for(const line of programLines){
-        programContainer.appendChild(document.createElement("p")).textContent = line;
+    let children = []
+    for (let child of programContainer.children) {
+        children.push(child)
+    }
+
+    for (const child of children) {
+        programContainer.removeChild(child)
+    }
+    for (const line of programLines) {
+        programContainer.appendChild(document.createElement("div")).textContent = line;
     }
 
 }
-function editProgram(){
+
+function editProgram() {
     let programContainer = document.getElementById("programContainer");
-    for (const children of programContainer.children){
-        children.remove()
+    let children = []
+    for (let child of programContainer.children) {
+        children.push(child)
     }
+
+    for (const child of children) {
+        programContainer.removeChild(child)
+    }
+
 
     let textarea = document.createElement("textarea");
     textarea.id = "program";
@@ -171,3 +205,35 @@ function editProgram(){
     textarea.placeholder = "Enter your program here...";
     programContainer.appendChild(textarea);
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    canvas = document.getElementById("memoryCanvas");
+    canvas.addEventListener("click", function (e) {
+        const cellsPerRow = Math.floor(canvas.width / cellSize);
+        let rect = canvas.getBoundingClientRect();
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+        let addr = Math.floor(x / cellSize) + Math.floor(y / cellSize) * cellsPerRow;
+        selectedCell = addr;
+        drawMemory()
+    });
+})
+document.addEventListener("keydown", function (e) {
+    if (e.key.toLowerCase() === "backspace") {
+        write(selectedCell, Math.floor(read(selectedCell) / 10));
+        drawMemory()
+        return;
+    }
+
+    const number = parseInt(e.key);
+    if (isNaN(number)) {
+        return;
+    }
+    if (selectedCell === null) {
+        return;
+    }
+
+
+    write(selectedCell, read(selectedCell) * 10 + number);
+    drawMemory()
+})
