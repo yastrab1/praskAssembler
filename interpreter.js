@@ -92,7 +92,10 @@ function runLine() {
     if (programCounter < 0 || programCounter >= lines.length) {
         return;
     }
-    if (line.startsWith("#")) {
+    programCounter++;
+    if (line.startsWith("#") || line.startsWith("label")) {
+
+        drawMemory()
         return;
     }
 
@@ -100,12 +103,12 @@ function runLine() {
     const command = parameters[0];
 
     for (const parameterIndex in parameters) {
-        parameters[parameterIndex] = parseInt(parameters[parameterIndex]);
+        parameters[parameterIndex] = parameters[parameterIndex];
     }
     if (command === "add") {
-        write(parameters[3], read(parameters[1]) + read(parameters[2]));
+        write(parseInt(parameters[3]), read(parseInt(parameters[1])) + read(parseInt(parameters[2])));
     } else if (command === "sub") {
-        write(parameters[3], read(parameters[1]) - read(parameters[2]));
+        write(parseInt(parameters[3]), read(parseInt(parameters[1])) - read(parseInt(parameters[2])));
     }
         // else if (command === "mul") {
         //     write(parameters[3], read(parameters[1]) * read(parameters[2]));
@@ -113,28 +116,24 @@ function runLine() {
     else if (command === "jmp") {
         programCounter = labels[parameters[1]];
     } else if (command === "eq") {
-        if (read(parameters[1]) === read(parameters[2])) {
+        if (read(parseInt(parameters[1])) === read(parseInt(parameters[2]))) {
             programCounter = labels[parameters[3]];
         }
     } else if (command === "lt") {
-        if (read(parameters[1]) < read(parameters[2])) {
+        if (read(parseInt(parameters[1])) < read(parseInt(parameters[2]))) {
             programCounter = labels[parameters[3]];
         }
     } else if (command === "set") {
-        write(parameters[1], parameters[2]);
+        write(parseInt(parameters[1]), parseInt(parameters[2]));
     } else if (command === "read") {
-        write(read(read(parameters[1])), parameters[2],);
+        write(read(read(parseInt(parameters[1]))), parseInt(parameters[2]));
     } else if (command === "write") {
-        write(read(parameters[1]), read(parameters[2]));
-        console.log(read(parameters[1]));
-        console.log(read(parameters[2]));
-    } else if (command === "label") {
-        labels[parameters[1]] = programCounter;
-    } else {
+        write(read(parseInt(parameters[1])), read(parseInt(parameters[2])));
+    }else {
         setError("Unknown command: " + command);
         return;
     }
-    programCounter++;
+
     drawMemory();
     writtenMemoryCellsThisLine = []
     readMemoryCellsThisLine = []
@@ -152,7 +151,7 @@ async function loadExercise(n) {
     if (!el) return;
     try {
         el.textContent = 'Loading exercise #' + n + '...';
-        const res = await fetch(String(n) + '.txt');
+        const res = await fetch(String(n) + '.md');
 
 
         el.innerHTML = marked.parse(await res.text());
@@ -166,11 +165,25 @@ function setError(error) {
     if (!el) return;
     el.textContent = error;
 }
+function loadLabels(){
+    const lines = program.split('\n');
+    for (const i in lines) {
+        console.log(i)
+        const parameters = lines[i].split(' ');
+        if (parameters[0] === "label") {
+            console.log(parameters[1])
+            console.log(parseInt(i))
+            labels[parameters[1]] = parseInt(i);
+        }
+    }
+}
 
 function saveProgram() {
     let programContainer = document.getElementById("programContainer");
     let programTextArea = document.getElementById("program");
     program = programTextArea.value;
+    loadLabels()
+
     let programLines = program.split('\n');
     let children = []
     for (let child of programContainer.children) {
@@ -205,7 +218,17 @@ function editProgram() {
     textarea.placeholder = "Enter your program here...";
     programContainer.appendChild(textarea);
 }
+async function runProgram() {
+    initMemory();
+    saveProgram();
+    resetProgram();
+    while (programCounter < program.split('\n').length) {
+        console.log(programCounter);
+        runLine();
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
 
+}
 document.addEventListener("DOMContentLoaded", function () {
     canvas = document.getElementById("memoryCanvas");
     canvas.addEventListener("click", function (e) {
