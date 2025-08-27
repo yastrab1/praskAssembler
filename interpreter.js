@@ -7,7 +7,7 @@ const cellSize = 40;
 let readMemoryCellsThisLine = []
 let writtenMemoryCellsThisLine = []
 let selectedCell = null;
-
+let savedProgram = false;
 function initMemory() {
     memory = [];
     let memorySize = 100// document.getElementById("memorySize").value;
@@ -178,6 +178,7 @@ function loadLabels(){
 }
 
 function saveProgram() {
+    if (savedProgram) return;
     let programContainer = document.getElementById("programContainer");
     let programTextArea = document.getElementById("program");
     program = programTextArea.value;
@@ -195,10 +196,11 @@ function saveProgram() {
     for (const line of programLines) {
         programContainer.appendChild(document.createElement("div")).textContent = line;
     }
-
+    savedProgram = true;
 }
 
 function editProgram() {
+    if (!savedProgram) return;
     let programContainer = document.getElementById("programContainer");
     let children = []
     for (let child of programContainer.children) {
@@ -216,6 +218,7 @@ function editProgram() {
     textarea.rows = 20;
     textarea.placeholder = "Enter your program here...";
     programContainer.appendChild(textarea);
+    savedProgram = false;
 }
 async function runProgram() {
     initMemory();
