@@ -272,6 +272,7 @@ function checkResultsFromEntry(entry) {
 
 async function testProgram() {
     if (currentOpenedProblem === null) {
+        setError("Select a problem first")
         return
     }
     setError("")
@@ -289,8 +290,11 @@ async function testProgram() {
         await runProgram(false);
         result = result && checkResultsFromEntry(entry);
     }
-
+    initMemory()
     alert(result ? "Correct!" : "Wrong!")
+    if (result) {
+        displayConfetti()
+    }
 
 }
 
@@ -332,3 +336,41 @@ document.addEventListener("DOMContentLoaded", function () {
         drawMemory()
     })
 })
+
+
+function displayConfetti() {
+    const colors = ['#ff0', '#0f0', '#0ff', '#f0f', '#f00', '#00f'];
+
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+
+        const size = Math.floor(Math.random() * 8 + 4) + 'px';
+        confetti.style.width = size;
+        confetti.style.height = size;
+
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+        confetti.style.position = 'absolute';
+        confetti.style.left = Math.random() * (window.innerWidth-50) + 'px';
+        confetti.style.top = Math.random() * (window.innerHeight) / 2 + 'px';
+
+        const rotate = Math.random() * 360;
+        confetti.style.transform = `rotate(${rotate}deg)`;
+
+        const duration = Math.random() * 2 + 2;
+        confetti.style.transition = `transform ${duration}s linear, top ${duration}s linear, opacity ${duration}s`;
+
+        document.body.appendChild(confetti);
+
+        requestAnimationFrame(() => {
+            confetti.style.top = (window.innerHeight-20) + 'px';
+            confetti.style.transform = `rotate(${rotate + 360}deg)`;
+            confetti.style.opacity = '0';
+        });
+
+        setTimeout(() => {
+            confetti.remove();
+        }, duration * 1000);
+
+    }
+}
