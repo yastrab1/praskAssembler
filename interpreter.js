@@ -131,9 +131,13 @@ function runLine() {
     } else if (command === "set") {
         write(parseInt(parameters[1]), parseInt(parameters[2]));
     } else if (command === "read") {
-        write(read(read(parseInt(parameters[1]))), parseInt(parameters[2]));
+        const pointer_addr = parseInt(parameters[1]);
+        const result_addr = parseInt(parameters[2]);
+        write(read(result_addr), read(read(pointer_addr)));
     } else if (command === "write") {
-        write(read(parseInt(parameters[1])), read(parseInt(parameters[2])));
+        const ptr_addr = parseInt(parameters[1]);
+        const source_addr = parseInt(parameters[2]);
+        write(read(read(ptr_addr)), read(source_addr));
     } else {
         setError("Unknown command: " + command);
         return;
