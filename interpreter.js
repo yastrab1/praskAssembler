@@ -133,11 +133,11 @@ function runLine() {
     } else if (command === "read") {
         const pointer_addr = parseInt(parameters[1]);
         const result_addr = parseInt(parameters[2]);
-        write(read(result_addr), read(read(pointer_addr)));
+        write(result_addr, read(read(pointer_addr)));
     } else if (command === "write") {
         const ptr_addr = parseInt(parameters[1]);
         const source_addr = parseInt(parameters[2]);
-        write(read(read(ptr_addr)), read(source_addr));
+        write(read(ptr_addr), read(source_addr));
     } else {
         setError("Unknown command: " + command);
         return;
@@ -296,7 +296,9 @@ async function testProgram() {
 
 document.addEventListener("DOMContentLoaded", function () {
     canvas = document.getElementById("memoryCanvas");
+    const textArea = document.getElementById("program");
     canvas.addEventListener("click", function (e) {
+        canvas.focus()
         const cellsPerRow = Math.floor(canvas.width / cellSize);
         let rect = canvas.getBoundingClientRect();
         let x = e.clientX - rect.left;
@@ -305,23 +307,28 @@ document.addEventListener("DOMContentLoaded", function () {
         selectedCell = addr;
         drawMemory()
     });
-})
-document.addEventListener("keydown", function (e) {
-    if (e.key.toLowerCase() === "backspace") {
-        write(selectedCell, Math.floor(read(selectedCell) / 10));
+    canvas.addEventListener("keydown", function (e) {
+        if (e.key.toLowerCase() === "backspace") {
+            write(selectedCell, Math.floor(read(selectedCell) / 10));
+            drawMemory()
+            return;
+        }
+        if (e.key.toLowerCase() === "escape") {
+            selectedCell = null;
+            drawMemory()
+            return;
+        }
+
+        const number = parseInt(e.key);
+        if (isNaN(number)) {
+            return;
+        }
+        if (selectedCell === null) {
+            return;
+        }
+
+
+        write(selectedCell, read(selectedCell) * 10 + number);
         drawMemory()
-        return;
-    }
-
-    const number = parseInt(e.key);
-    if (isNaN(number)) {
-        return;
-    }
-    if (selectedCell === null) {
-        return;
-    }
-
-
-    write(selectedCell, read(selectedCell) * 10 + number);
-    drawMemory()
+    })
 })
