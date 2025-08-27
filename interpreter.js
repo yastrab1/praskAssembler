@@ -109,10 +109,9 @@ function runLine() {
         write(parseInt(parameters[3]), read(parseInt(parameters[1])) + read(parseInt(parameters[2])));
     } else if (command === "sub") {
         write(parseInt(parameters[3]), read(parseInt(parameters[1])) - read(parseInt(parameters[2])));
+    }else if (command === "cpy") {
+        write(parseInt(parameters[2]), read(parseInt(parameters[1])));
     }
-        // else if (command === "mul") {
-        //     write(parameters[3], read(parameters[1]) * read(parameters[2]));
-    // }
     else if (command === "jmp") {
         programCounter = labels[parameters[1]];
     } else if (command === "eq") {

@@ -64,6 +64,8 @@
             border-radius: 8px;
             padding: 12px;
             gap: 10px;
+            overflow-y: auto;
+            scrollbar-color: var(--border) transparent;
         }
 
         .controls {
@@ -167,6 +169,7 @@
         <!-- Left: Exercise list -->
         <section class="panel">
             <div class="ex-list" aria-label="exercises">
+                <button class="ex-btn" type="button" onclick="loadExercise('T1')">Tutoriál</button>
                 <button class="ex-btn" type="button" onclick="loadExercise(1)">#1</button>
                 <button class="ex-btn" type="button" onclick="loadExercise(2)">#2</button>
                 <button class="ex-btn" type="button" onclick="loadExercise(3)">#3</button>
