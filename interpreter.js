@@ -265,6 +265,7 @@ function checkResultsFromEntry(entry) {
     return true;
 }
 
+
 async function testProgram() {
     if (currentOpenedProblem === null) {
         return
@@ -281,7 +282,7 @@ async function testProgram() {
     for (const entry of myProblem["testingEntries"]) {
         initMemory();
         setupMemoryFromEntry(entry);
-        await runProgram();
+        await runProgram(false);
         result = result && checkResultsFromEntry(entry);
     }
 
