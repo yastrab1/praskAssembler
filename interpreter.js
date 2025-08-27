@@ -8,6 +8,8 @@ let readMemoryCellsThisLine = []
 let writtenMemoryCellsThisLine = []
 let selectedCell = null;
 let savedProgram = false;
+let currentOpenedProblem = null;
+
 function initMemory() {
     memory = [];
     let memorySize = 100// document.getElementById("memorySize").value;
@@ -21,6 +23,19 @@ function initMemory() {
     drawMemory();
 }
 
+
+function highlightLine() {
+    if (!savedProgram) return;
+    const programContainer = document.getElementById("programContainer");
+    for (const children of programContainer.children) {
+        if (children.tagName.toLowerCase() === "div") {
+            children.removeAttribute("class")
+        }
+    }
+    if (programCounter < programContainer.children.length) {
+        programContainer.children[programCounter].className = "programLineHighlight"
+    }
+}
 
 function drawMemory() {
     if (!canvas) return;
@@ -58,16 +73,7 @@ function drawMemory() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText((memory[i] ?? 0).toString(), x + cellSize / 2, y + cellSize / 2);
-
-        const programContainer = document.getElementById("programContainer");
-        for (const children of programContainer.children) {
-            if (children.tagName.toLowerCase() === "div") {
-                children.removeAttribute("class")
-            }
-        }
-        if (programCounter < programContainer.children.length) {
-            programContainer.children[programCounter].className = "programLineHighlight"
-        }
+        highlightLine();
     }
 
     // Update PC display in UI as well
@@ -86,6 +92,7 @@ function write(address, value) {
 }
 
 function runLine() {
+    if (!savedProgram) return;
     const lines = program.split('\n');
     const line = lines[programCounter];
 
@@ -109,10 +116,9 @@ function runLine() {
         write(parseInt(parameters[3]), read(parseInt(parameters[1])) + read(parseInt(parameters[2])));
     } else if (command === "sub") {
         write(parseInt(parameters[3]), read(parseInt(parameters[1])) - read(parseInt(parameters[2])));
-    }else if (command === "cpy") {
+    } else if (command === "cpy") {
         write(parseInt(parameters[2]), read(parseInt(parameters[1])));
-    }
-    else if (command === "jmp") {
+    } else if (command === "jmp") {
         programCounter = labels[parameters[1]];
     } else if (command === "eq") {
         if (read(parseInt(parameters[1])) === read(parseInt(parameters[2]))) {
@@ -128,7 +134,7 @@ function runLine() {
         write(read(read(parseInt(parameters[1]))), parseInt(parameters[2]));
     } else if (command === "write") {
         write(read(parseInt(parameters[1])), read(parseInt(parameters[2])));
-    }else {
+    } else {
         setError("Unknown command: " + command);
         return;
     }
@@ -146,6 +152,7 @@ function resetProgram() {
 
 // Load exercise description from a text file (e.g., 1.txt) and display in the center panel
 async function loadExercise(n) {
+    currentOpenedProblem = n;
     const el = document.getElementById('exerciseContent');
     if (!el) return;
     try {
@@ -164,7 +171,8 @@ function setError(error) {
     if (!el) return;
     el.textContent = error;
 }
-function loadLabels(){
+
+function loadLabels() {
     const lines = program.split('\n');
     for (const i in lines) {
         console.log(i)
@@ -179,6 +187,7 @@ function loadLabels(){
 
 function saveProgram() {
     if (savedProgram) return;
+    setError("")
     let programContainer = document.getElementById("programContainer");
     let programTextArea = document.getElementById("program");
     program = programTextArea.value;
@@ -201,6 +210,7 @@ function saveProgram() {
 
 function editProgram() {
     if (!savedProgram) return;
+    setError("")
     let programContainer = document.getElementById("programContainer");
     let children = []
     for (let child of programContainer.children) {
@@ -220,17 +230,65 @@ function editProgram() {
     programContainer.appendChild(textarea);
     savedProgram = false;
 }
-async function runProgram() {
-    initMemory();
+
+async function runProgram(wait = true) {
     saveProgram();
     resetProgram();
     while (programCounter < program.split('\n').length) {
         console.log(programCounter);
         runLine();
-        await new Promise(resolve => setTimeout(resolve, 100));
+        if (wait){
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
     }
 
 }
+
+function setupMemoryFromEntry(entry) {
+    const conditions = entry["startingCondition"]
+    console.log(conditions)
+    for (const [addr, value] of Object.entries(conditions)) {
+        write(parseInt(addr), parseInt(value))
+    }
+}
+
+function checkResultsFromEntry(entry) {
+    const conditions = entry["result"]
+
+    for (const [addr, value] of Object.entries(conditions)) {
+
+        if (read(parseInt(addr)) !== parseInt(value)) {
+            setError("Wrong answer")
+            return false;
+        }
+    }
+    return true;
+}
+
+async function testProgram() {
+    if (currentOpenedProblem === null) {
+        return
+    }
+    setError("")
+    const testingManifest = await fetch("testingManifest.json").then(res => res.json());
+    let myProblem = null;
+    for (const problem of testingManifest["problems"]) {
+        if (problem["name"] === currentOpenedProblem) {
+            myProblem = problem;
+        }
+    }
+    let result = true;
+    for (const entry of myProblem["testingEntries"]) {
+        initMemory();
+        setupMemoryFromEntry(entry);
+        await runProgram();
+        result = result && checkResultsFromEntry(entry);
+    }
+
+    alert(result ? "Correct!" : "Wrong!")
+
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     canvas = document.getElementById("memoryCanvas");
     canvas.addEventListener("click", function (e) {

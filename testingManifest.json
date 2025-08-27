@@ -1,0 +1,384 @@
+{
+  "problems": [
+    {
+      "name": "1",
+      "testingEntries": [
+        {
+          "startingCondition": {
+            "0": 17,
+            "1": 28
+          },
+          "result": {
+            "10": 90
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 34,
+            "1": 47
+          },
+          "result": {
+            "10": 162
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 59,
+            "1": 81
+          },
+          "result": {
+            "10": 280
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 39,
+            "1": 46
+          },
+          "result": {
+            "10": 170
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 34,
+            "1": 94
+          },
+          "result": {
+            "10": 256
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 92,
+            "1": 79
+          },
+          "result": {
+            "10": 342
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 10,
+            "1": 14
+          },
+          "result": {
+            "10": 48
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 69,
+            "1": 47
+          },
+          "result": {
+            "10": 232
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 95,
+            "1": 39
+          },
+          "result": {
+            "10": 268
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 43,
+            "1": 20
+          },
+          "result": {
+            "10": 126
+          }
+        }
+      ]
+    },
+    {
+      "name": "2",
+      "testingEntries": [
+        {
+          "startingCondition": {
+            "0": 58,
+            "1": 77
+          },
+          "result": {
+            "10": 4466
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 2,
+            "1": 3
+          },
+          "result": {
+            "10": 6
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 40,
+            "1": 39
+          },
+          "result": {
+            "10": 1560
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 67,
+            "1": 22
+          },
+          "result": {
+            "10": 1474
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 85,
+            "1": 20
+          },
+          "result": {
+            "10": 1700
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 73,
+            "1": 97
+          },
+          "result": {
+            "10": 7081
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 23,
+            "1": 12
+          },
+          "result": {
+            "10": 276
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 49,
+            "1": 78
+          },
+          "result": {
+            "10": 3822
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 23,
+            "1": 51
+          },
+          "result": {
+            "10": 1173
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 94,
+            "1": 37
+          },
+          "result": {
+            "10": 3478
+          }
+        }
+      ]
+    },
+    {
+      "name": "3",
+      "testingEntries": [
+        {
+          "startingCondition": {
+            "0": 11,
+            "1": 63
+          },
+          "result": {
+            "10": 0,
+            "11": 11
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 79,
+            "1": 13
+          },
+          "result": {
+            "10": 6,
+            "11": 1
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 31,
+            "1": 72
+          },
+          "result": {
+            "10": 0,
+            "11": 31
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 7,
+            "1": 84
+          },
+          "result": {
+            "10": 0,
+            "11": 7
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 53,
+            "1": 33
+          },
+          "result": {
+            "10": 1,
+            "11": 20
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 30,
+            "1": 79
+          },
+          "result": {
+            "10": 0,
+            "11": 30
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 41,
+            "1": 41
+          },
+          "result": {
+            "10": 1,
+            "11": 0
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 10,
+            "1": 88
+          },
+          "result": {
+            "10": 0,
+            "11": 10
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 56,
+            "1": 63
+          },
+          "result": {
+            "10": 0,
+            "11": 56
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 29,
+            "1": 44
+          },
+          "result": {
+            "10": 0,
+            "11": 29
+          }
+        }
+      ]
+    },
+    {
+      "name": "4",
+      "testingEntries": [
+        {
+          "startingCondition": {
+            "0": 1
+          },
+          "result": {
+            "10": 1
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 9
+          },
+          "result": {
+            "10": 34
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 14
+          },
+          "result": {
+            "10": 377
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 1
+          },
+          "result": {
+            "10": 1
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 5
+          },
+          "result": {
+            "10": 5
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 9
+          },
+          "result": {
+            "10": 34
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 6
+          },
+          "result": {
+            "10": 8
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 5
+          },
+          "result": {
+            "10": 5
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 17
+          },
+          "result": {
+            "10": 1597
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 7
+          },
+          "result": {
+            "10": 13
+          }
+        }
+      ]
+    }
+  ]
+}
