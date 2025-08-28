@@ -91,6 +91,14 @@ function write(address, value) {
     memory[address] = value;
 }
 
+function jump(label) {
+    if (!labels[label]) {
+        setError("Label not found: " + label);
+        return;
+    }
+    programCounter = labels[label];
+}
+
 function runLine() {
     if (!savedProgram) return;
     const lines = program.split('\n');
@@ -119,14 +127,14 @@ function runLine() {
     } else if (command === "cpy") {
         write(parseInt(parameters[2]), read(parseInt(parameters[1])));
     } else if (command === "jmp") {
-        programCounter = labels[parameters[1]];
+        jump(parameters[1]);
     } else if (command === "eq") {
         if (read(parseInt(parameters[1])) === read(parseInt(parameters[2]))) {
-            programCounter = labels[parameters[3]];
+            jump(parameters[3]);
         }
     } else if (command === "lt") {
         if (read(parseInt(parameters[1])) < read(parseInt(parameters[2]))) {
-            programCounter = labels[parameters[3]];
+            jump(parameters[3]);
         }
     } else if (command === "set") {
         write(parseInt(parameters[1]), parseInt(parameters[2]));
@@ -182,8 +190,6 @@ function loadLabels() {
         console.log(i)
         const parameters = lines[i].split(' ');
         if (parameters[0] === "label") {
-            console.log(parameters[1])
-            console.log(parseInt(i))
             labels[parameters[1]] = parseInt(i);
         }
     }
@@ -235,14 +241,19 @@ function editProgram() {
     savedProgram = false;
 }
 
-async function runProgram(wait = true) {
+async function runProgram(wait = true,stepTimeout=1000) {
+    let steps = 0;
     saveProgram();
     resetProgram();
     while (programCounter < program.split('\n').length) {
         console.log(programCounter);
         runLine();
+        steps+=1;
         if (wait){
             await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        if (steps === stepTimeout){
+            return;
         }
     }
 
@@ -286,7 +297,6 @@ async function testProgram() {
     let result = true;
     for (const entry of myProblem["testingEntries"]) {
         initMemory();
-        resetProgram();
         setupMemoryFromEntry(entry);
         await runProgram(false);
         result = result && checkResultsFromEntry(entry);
@@ -294,6 +304,7 @@ async function testProgram() {
     initMemory()
     alert(result ? "Correct!" : "Wrong!")
     if (result) {
+        document.getElementById(currentOpenedProblem).classList.add("finished");
         displayConfetti()
     }
 
