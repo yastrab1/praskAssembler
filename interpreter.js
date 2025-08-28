@@ -100,7 +100,7 @@ function runLine() {
         return;
     }
     programCounter++;
-    if (line.startsWith("#") || line.startsWith("label")) {
+    if (line.startsWith("#") || line.startsWith("label") || line.trim() === "") {
 
         drawMemory()
         return;
@@ -286,6 +286,7 @@ async function testProgram() {
     let result = true;
     for (const entry of myProblem["testingEntries"]) {
         initMemory();
+        resetProgram();
         setupMemoryFromEntry(entry);
         await runProgram(false);
         result = result && checkResultsFromEntry(entry);
