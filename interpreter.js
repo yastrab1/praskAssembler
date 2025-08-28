@@ -162,6 +162,13 @@ function resetProgram() {
     drawMemory();
 }
 
+function loadProgramFromLocalStorage(exercise) {
+    editProgram()
+    if (localStorage.getItem(exercise)) {
+        document.getElementById("program").value = localStorage.getItem(exercise)
+    }
+}
+
 // Load exercise description from a text file (e.g., 1.txt) and display in the center panel
 async function loadExercise(n) {
     currentOpenedProblem = n;
@@ -176,6 +183,7 @@ async function loadExercise(n) {
     } catch (err) {
         el.textContent = 'Could not load exercise ' + n + '.txt\n' + (err?.message || String(err));
     }
+    loadProgramFromLocalStorage(n);
 }
 
 function setError(error) {
@@ -198,6 +206,7 @@ function loadLabels() {
 function saveProgram() {
     if (savedProgram) return;
     setError("")
+
     let programContainer = document.getElementById("programContainer");
     let programTextArea = document.getElementById("program");
     program = programTextArea.value;
@@ -215,6 +224,7 @@ function saveProgram() {
     for (const line of programLines) {
         programContainer.appendChild(document.createElement("div")).textContent = line;
     }
+    localStorage.setItem(currentOpenedProblem, program)
     savedProgram = true;
 }
 
@@ -310,7 +320,18 @@ async function testProgram() {
 
 }
 
+function displayFinishedProblems() {
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const el = document.getElementById(key);
+        if (el) {
+            el.classList.add("finished");
+        }
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
+    displayFinishedProblems()
     canvas = document.getElementById("memoryCanvas");
     const textArea = document.getElementById("program");
     canvas.addEventListener("click", function (e) {
