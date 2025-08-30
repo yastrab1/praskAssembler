@@ -163,10 +163,9 @@
 <body>
 <div class="wrap">
     <header>
-        <div class="title">Assembler Exercise</div>
+        <div class="title">Assembler Interaktívka</div>
     </header>
-    <div class="info">Select an exercise on the left. The exercise text appears in the center. Write your program on the
-        right (above memory), initialize memory, and step through lines.
+    <div class="info">Vyber zadanie naľavo, v strede ho uvidíš a naľavo k nemu môžeš napísať program.
     </div>
     <div class="main">
         <!-- Left: Exercise list -->
@@ -183,7 +182,7 @@
 
         <!-- Center: Exercise text -->
         <section class="panel">
-            <div id="exerciseContent">Choose an exercise (#1–#8) to view its description here.</div>
+            <div id="exerciseContent">Vyber zadanie</div>
         </section>
         <section class="panel">
             <label for="program">Program:</label>
@@ -192,13 +191,13 @@
             </div>
             <p class="error" id="error"></p>
             <div class="controls">
-                <button onclick="runProgram()">Run Program</button>
-                <button onclick="runLine()">Step Line</button>
-                <button onclick="testProgram()">Test Program</button>
-                <button onclick="resetProgram()">Reset Program</button>
-                <button onclick="initMemory()">Reset memory</button>
-                <button onclick="saveProgram()">Save program</button>
-                <button onclick="editProgram()">Edit program</button>
+                <button onclick="runProgram()">Spusti program</button>
+                <button onclick="runLine()">Krok o riadok</button>
+                <button onclick="testProgram()">Otestuj program</button>
+                <button onclick="resetProgram()">Skoč na začiatok</button>
+                <button onclick="initMemory()">Vyčisti pamäť</button>
+                <button onclick="saveProgram()">Ulož program</button>
+                <button onclick="editProgram()">Zmeň program</button>
                 <p id="pcDisplay"></p>
             </div>
             <canvas width="400" height="400" id="memoryCanvas" tabindex="0"></canvas>

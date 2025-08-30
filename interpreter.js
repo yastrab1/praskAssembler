@@ -10,7 +10,19 @@ let selectedCell = null;
 let savedProgram = false;
 let currentOpenedProblem = null;
 let lastExecutedLine = null;
+const maximumCellValue = 1000;
 
+const commandSyntax = {
+    "set": ["int","int"],
+    "add": ["int","int","int"],
+    "sub": ["int","int","int"],
+    "copy": ["int","int"],
+    "jump": ["string"],
+    "eq": ["int","int","string"],
+    "lt": ["int","int","string"],
+    "read": ["int","int"],
+    "write": ["int","int"],
+}
 function initMemory() {
     memory = [];
     let memorySize = 100// document.getElementById("memorySize").value;
@@ -83,11 +95,27 @@ function drawMemory() {
 }
 
 function read(address) {
+    if (address < 0 || address >= memory.length) {
+        setError("Memory read out of bounds: " + address);
+        return;
+    }
     readMemoryCellsThisLine.push(address);
     return memory[address];
 }
 
 function write(address, value) {
+    if (address < 0 || address >= memory.length) {
+        setError("Memory write out of bounds: " + address);
+        return;
+    }
+    if (value >= maximumCellValue) {
+        setError(`Cannot write value larger than ${maximumCellValue}: ${value}`);
+        return;
+    }
+    if (value < 0) {
+        setError(`Cannot write negative value: ${value}`);
+        return;
+    }
     writtenMemoryCellsThisLine.push(address);
     memory[address] = value;
 }
@@ -110,10 +138,11 @@ function runLine() {
         return;
     }
     programCounter++;
-    if (line.startsWith("#") || line.startsWith("label") || line.trim() === "") {
+    if (isIrrelevantLine(line)) {
         // Also consider comments/labels as the last executed line for highlighting
         lastExecutedLine = currentIndex;
-        drawMemory()
+        drawMemory();
+        runLine(); //Auto-skip irrelevant lines
         return;
     }
 
@@ -129,9 +158,9 @@ function runLine() {
         write(parseInt(parameters[3]), read(parseInt(parameters[1])) + read(parseInt(parameters[2])));
     } else if (command === "sub") {
         write(parseInt(parameters[3]), read(parseInt(parameters[1])) - read(parseInt(parameters[2])));
-    } else if (command === "cpy") {
+    } else if (command === "copy") {
         write(parseInt(parameters[2]), read(parseInt(parameters[1])));
-    } else if (command === "jmp") {
+    } else if (command === "jump") {
         jump(parameters[1]);
     } else if (command === "eq") {
         if (read(parseInt(parameters[1])) === read(parseInt(parameters[2]))) {
@@ -198,6 +227,12 @@ function setError(error) {
     el.textContent = error;
 }
 
+function addError(error) {
+    const el = document.getElementById('error');
+    if (!el) return;
+    setError(el.textContent + "\n" + error);
+}
+
 function loadLabels() {
     const lines = program.split('\n');
     for (const i in lines) {
@@ -230,6 +265,7 @@ function saveProgram() {
         programContainer.appendChild(document.createElement("div")).textContent = line;
     }
     localStorage.setItem(currentOpenedProblem, program)
+    syntaxCheck();
     savedProgram = true;
 }
 
@@ -320,18 +356,50 @@ async function testProgram() {
     alert(result ? "Correct!" : "Wrong!")
     if (result) {
         document.getElementById(currentOpenedProblem).classList.add("finished");
+        const completed = localStorage.getItem("completed")
+        localStorage.setItem("completed", completed + "," + currentOpenedProblem)
         displayConfetti()
     }
 
 }
 
 function displayFinishedProblems() {
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
+    const completed = localStorage.getItem("completed").split(",")
+    for (const key of completed) {
         const el = document.getElementById(key);
         if (el) {
             el.classList.add("finished");
         }
+    }
+}
+
+function isIrrelevantLine(line) {
+    return line.startsWith("#") || line.startsWith("label") || line.trim() === "";
+}
+
+function syntaxCheck(){
+    const lines = program.split('\n');
+    for (const line of lines) {
+        if (isIrrelevantLine(line)) {continue}
+
+        const parameters = line.split(' ');
+        const command = parameters[0];
+        if (!commandSyntax[parameters[0]]) {
+            addError("Line " + (lines.indexOf(line) + 1) + ": Unknown command: " + parameters[0]);
+            continue
+        }
+        const syntax = commandSyntax[command];
+        if (parameters.length !== syntax.length+1) {
+            addError(`Line ${(lines.indexOf(line) + 1)} Wrong number of parameters for command: ${command}, expecting ${syntax.length}, got ${parameters.length-1}`);
+        }
+        for (let i = 1; i < syntax.length; i++) {
+            if (syntax[i] === "int") {
+                if (isNaN(parseInt(parameters[i]))) {
+                    addError(`Line ${(lines.indexOf(line) + 1)} Invalid integer value for parameter ${i + 1}: ${parameters[i]}`);
+                }
+            }
+        }
+
     }
 }
 
