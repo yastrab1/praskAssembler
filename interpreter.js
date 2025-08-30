@@ -9,6 +9,7 @@ let writtenMemoryCellsThisLine = []
 let selectedCell = null;
 let savedProgram = false;
 let currentOpenedProblem = null;
+let lastExecutedLine = null;
 
 function initMemory() {
     memory = [];
@@ -32,8 +33,8 @@ function highlightLine() {
             children.removeAttribute("class")
         }
     }
-    if (programCounter < programContainer.children.length) {
-        programContainer.children[programCounter].className = "programLineHighlight"
+    if (lastExecutedLine !== null && lastExecutedLine >= 0 && lastExecutedLine < programContainer.children.length) {
+        programContainer.children[lastExecutedLine].className = "programLineHighlight";
     }
 }
 
@@ -102,14 +103,16 @@ function jump(label) {
 function runLine() {
     if (!savedProgram) return;
     const lines = program.split('\n');
-    const line = lines[programCounter];
+    const currentIndex = programCounter;
+    const line = lines[currentIndex];
 
-    if (programCounter < 0 || programCounter >= lines.length) {
+    if (currentIndex < 0 || currentIndex >= lines.length) {
         return;
     }
     programCounter++;
     if (line.startsWith("#") || line.startsWith("label") || line.trim() === "") {
-
+        // Also consider comments/labels as the last executed line for highlighting
+        lastExecutedLine = currentIndex;
         drawMemory()
         return;
     }
@@ -120,6 +123,8 @@ function runLine() {
     for (const parameterIndex in parameters) {
         parameters[parameterIndex] = parameters[parameterIndex];
     }
+    // Record the line we are executing now (non-comment/non-label)
+    lastExecutedLine = currentIndex;
     if (command === "add") {
         write(parseInt(parameters[3]), read(parseInt(parameters[1])) + read(parseInt(parameters[2])));
     } else if (command === "sub") {
@@ -159,6 +164,7 @@ function runLine() {
 
 function resetProgram() {
     programCounter = 0;
+    lastExecutedLine = null;
     drawMemory();
 }
 
@@ -195,7 +201,6 @@ function setError(error) {
 function loadLabels() {
     const lines = program.split('\n');
     for (const i in lines) {
-        console.log(i)
         const parameters = lines[i].split(' ');
         if (parameters[0] === "label") {
             labels[parameters[1]] = parseInt(i);
