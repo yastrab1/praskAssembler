@@ -1,7 +1,92 @@
 {
   "problems": [
     {
-      "name": "1",
+      "name": 1,
+      "testingEntries": [
+        {
+          "startingCondition": {
+            "0": 2
+          },
+          "result": {
+            "10": 7
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 3
+          },
+          "result": {
+            "10": 10
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 4
+          },
+          "result": {
+            "10": 10
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 1
+          },
+          "result": {
+            "10": 5
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 7
+          },
+          "result": {
+            "10": 10
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 10
+          },
+          "result": {
+            "10": 10
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 3
+          },
+          "result": {
+            "10": 10
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 10
+          },
+          "result": {
+            "10": 10
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 9
+          },
+          "result": {
+            "10": 10
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 1
+          },
+          "result": {
+            "10": 5
+          }
+        }
+      ]
+    },
+    {
+      "name": "2",
       "testingEntries": [
         {
           "startingCondition": {
@@ -96,7 +181,7 @@
       ]
     },
     {
-      "name": "2",
+      "name": "3",
       "testingEntries": [
         {
           "startingCondition": {
@@ -191,7 +276,7 @@
       ]
     },
     {
-      "name": "3",
+      "name": "4",
       "testingEntries": [
         {
           "startingCondition": {
@@ -296,7 +381,7 @@
       ]
     },
     {
-      "name": "4",
+      "name": "5",
       "testingEntries": [
         {
           "startingCondition": {
@@ -376,6 +461,91 @@
           },
           "result": {
             "10": 13
+          }
+        }
+      ]
+    },
+    {
+      "name": "T1",
+      "testingEntries": [
+        {
+          "startingCondition": {
+            "0": 10
+          },
+          "result": {
+            "10": 11
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 3
+          },
+          "result": {
+            "10": 4
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 4
+          },
+          "result": {
+            "10": 5
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 7
+          },
+          "result": {
+            "10": 8
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 3
+          },
+          "result": {
+            "10": 4
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 10
+          },
+          "result": {
+            "10": 11
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 2
+          },
+          "result": {
+            "10": 3
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 8
+          },
+          "result": {
+            "10": 9
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 3
+          },
+          "result": {
+            "10": 4
+          }
+        },
+        {
+          "startingCondition": {
+            "0": 10
+          },
+          "result": {
+            "10": 11
           }
         }
       ]
