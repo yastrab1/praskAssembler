@@ -364,6 +364,7 @@ async function testProgram() {
 }
 
 function displayFinishedProblems() {
+    if (localStorage.getItem("completed") === null) return;
     const completed = localStorage.getItem("completed").split(",")
     for (const key of completed) {
         const el = document.getElementById(key);
