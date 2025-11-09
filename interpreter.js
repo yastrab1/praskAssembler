@@ -10,6 +10,7 @@ let selectedCell = null;
 let savedProgram = false;
 let currentOpenedProblem = null;
 let lastExecutedLine = null;
+let programRunning = false;
 const maximumCellValue = 1000;
 
 const commandSyntax = {
@@ -96,7 +97,7 @@ function drawMemory() {
 
 function read(address) {
     if (address < 0 || address >= memory.length) {
-        setError("Memory read out of bounds: " + address);
+        setError("Čítanie mimo pamäte, z adresy: " + address);
         return;
     }
     readMemoryCellsThisLine.push(address);
@@ -105,15 +106,15 @@ function read(address) {
 
 function write(address, value) {
     if (address < 0 || address >= memory.length) {
-        setError("Memory write out of bounds: " + address);
+        setError("Písanie mimo pamäte, na adresu: " + address);
         return;
     }
     if (value >= maximumCellValue) {
-        setError(`Cannot write value larger than ${maximumCellValue}: ${value}`);
+        setError(`Nedá sa napísať číslo väčšie než ${maximumCellValue}: ${value}`);
         return;
     }
     if (value < 0) {
-        setError(`Cannot write negative value: ${value}`);
+        setError(`Nedá sa napísať záporné číslo: ${value}`);
         return;
     }
     writtenMemoryCellsThisLine.push(address);
@@ -122,7 +123,7 @@ function write(address, value) {
 
 function jump(label) {
     if (!labels[label]) {
-        setError("Label not found: " + label);
+        setError("Neznámy label: " + label);
         return;
     }
     programCounter = labels[label];
@@ -181,7 +182,7 @@ function runLine() {
         const source_addr = parseInt(parameters[2]);
         write(read(ptr_addr), read(source_addr));
     } else {
-        setError("Unknown command: " + command);
+        setError("Neznámy príkaz: " + command);
         return;
     }
 
@@ -294,9 +295,11 @@ function editProgram() {
 
 async function runProgram(wait = true,stepTimeout=1000) {
     let steps = 0;
+    programRunning = true;
     saveProgram();
     resetProgram();
     while (programCounter < program.split('\n').length) {
+        if (!programRunning) return
         console.log(programCounter);
         runLine();
         steps+=1;
@@ -304,10 +307,11 @@ async function runProgram(wait = true,stepTimeout=1000) {
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         if (steps === stepTimeout){
+            programRunning = false;
             return;
         }
     }
-
+    programRunning = false;
 }
 
 function setupMemoryFromEntry(entry) {
@@ -324,7 +328,7 @@ function checkResultsFromEntry(entry) {
     for (const [addr, value] of Object.entries(conditions)) {
 
         if (read(parseInt(addr)) !== parseInt(value)) {
-            setError("Wrong answer")
+            setError("Nesprávna odpoveď")
             return false;
         }
     }
@@ -334,7 +338,7 @@ function checkResultsFromEntry(entry) {
 
 async function testProgram() {
     if (currentOpenedProblem === null) {
-        setError("Select a problem first")
+        setError("Najprv vyber nejakú úlohu")
         return
     }
     setError("")
@@ -353,7 +357,7 @@ async function testProgram() {
         result = result && checkResultsFromEntry(entry);
     }
     initMemory()
-    alert(result ? "Correct!" : "Wrong!")
+    alert(result ? "Správne!" : "Nesprávne!")
     if (result) {
         document.getElementById(currentOpenedProblem).classList.add("finished");
         const completed = localStorage.getItem("completed")
@@ -374,6 +378,10 @@ function displayFinishedProblems() {
     }
 }
 
+function pauseProgram() {
+    programRunning = false;
+}
+
 function isIrrelevantLine(line) {
     return line.startsWith("#") || line.startsWith("label") || line.trim() === "";
 }
@@ -386,17 +394,17 @@ function syntaxCheck(){
         const parameters = line.split(' ');
         const command = parameters[0];
         if (!commandSyntax[parameters[0]]) {
-            addError("Line " + (lines.indexOf(line) + 1) + ": Unknown command: " + parameters[0]);
+            addError("Riadok " + (lines.indexOf(line) + 1) + ": Neznámy: " + parameters[0]);
             continue
         }
         const syntax = commandSyntax[command];
         if (parameters.length !== syntax.length+1) {
-            addError(`Line ${(lines.indexOf(line) + 1)} Wrong number of parameters for command: ${command}, expecting ${syntax.length}, got ${parameters.length-1}`);
+            addError(`Riadok ${(lines.indexOf(line) + 1)} Nesprávny počet parametrov pre: ${command}, má byť ${syntax.length}, je ${parameters.length-1}`);
         }
         for (let i = 1; i < syntax.length; i++) {
             if (syntax[i] === "int") {
                 if (isNaN(parseInt(parameters[i]))) {
-                    addError(`Line ${(lines.indexOf(line) + 1)} Invalid integer value for parameter ${i + 1}: ${parameters[i]}`);
+                    addError(`Line ${(lines.indexOf(line) + 1)} Neplatné číslo pre parameter ${i + 1}: ${parameters[i]}`);
                 }
             }
         }
@@ -408,6 +416,7 @@ document.addEventListener("DOMContentLoaded", function () {
     displayFinishedProblems()
     canvas = document.getElementById("memoryCanvas");
     const textArea = document.getElementById("program");
+    initMemory();
     canvas.addEventListener("click", function (e) {
         canvas.focus()
         const cellsPerRow = Math.floor(canvas.width / cellSize);

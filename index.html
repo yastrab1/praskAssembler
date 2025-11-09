@@ -141,10 +141,6 @@
             padding: 8px 12px;
         }
 
-        #exerciseContent {
-            white-space: pre-wrap;
-        }
-
         @media (max-width: 1000px) {
             .main {
                 grid-template-columns: 1fr;
@@ -198,6 +194,7 @@
                 <button onclick="initMemory()">Vyčisti pamäť</button>
                 <button onclick="saveProgram()">Ulož program</button>
                 <button onclick="editProgram()">Zmeň program</button>
+                <button onclick="pauseProgram()">Zastav program</button>
                 <p id="pcDisplay"></p>
             </div>
             <canvas width="400" height="400" id="memoryCanvas" tabindex="0"></canvas>
