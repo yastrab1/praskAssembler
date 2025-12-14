@@ -212,7 +212,7 @@ async function loadExercise(n) {
     if (!el) return;
     try {
         el.textContent = 'Loading exercise #' + n + '...';
-        const res = await fetch(String(n) + '.md');
+        const res = await fetch("./"+String(n) + '.md');
 
 
         el.innerHTML = marked.parse(await res.text());
