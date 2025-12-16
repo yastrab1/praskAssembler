@@ -342,7 +342,7 @@ async function testProgram() {
         return
     }
     setError("")
-    const testingManifest = await fetch("testingManifest.json").then(res => res.json());
+    const testingManifest = await fetch("/assembler/testingManifest.json").then(res => res.json());
     let myProblem = null;
     for (const problem of testingManifest["problems"]) {
         if (problem["name"] === currentOpenedProblem) {
