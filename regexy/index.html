@@ -3,6 +3,7 @@
 <head>
 	<title>Prask &ndash; regulárne výrazy</title>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style>
 		body {
 			font-family: system-ui;
@@ -69,20 +70,30 @@
 	</style>
 </head>
 <body>
-	<p>
-		<strong>Úlohy</strong>
-		<button id="p0" onclick="openP(0)">0</button>
-		<button id="p1" onclick="openP(1)">1</button>
-		<button id="p2" onclick="openP(2)">2</button>
-		<button id="p3" onclick="openP(3)">3</button>
-		<button id="p4" onclick="openP(4)">4</button>
-		<button id="p5" onclick="openP(5)">5</button>
-	</p>
-	<p><strong>Napíš vzor, ktorému zodpovedajú práve také slová, že&hellip;</strong></p>
-	<p id="statement"></p>
-	<label>Vzor: <input id="pattern" oninput="updateMatch(); save()"></label>
-	<label>Slovo: <input id="text" oninput="updateMatch(); save()"></label>
-	<button onclick="test()">Otestovať vzor</label>
+<p>
+	<strong>Úlohy</strong>
+	<button id="p0" onclick="openP(0)">0</button>
+	<button id="p1" onclick="openP(1)">1</button>
+	<button id="p2" onclick="openP(2)">2</button>
+	<button id="p3" onclick="openP(3)">3</button>
+	<button id="p4" onclick="openP(4)">4</button>
+	<button id="p5" onclick="openP(5)">5</button>
+</p>
+<p><strong>Napíš vzor, ktorému zodpovedajú práve také slová, že&hellip;</strong></p>
+<p id="statement"></p>
+<label>Vzor: <input
+		id="pattern"
+		autocomplete="off"
+		autocorrect="off"
+		autocapitalize="off"
+		oninput="updateMatch(); save()"></label>
+<label>Slovo: <input
+		id="text"
+		autocomplete="off"
+		autocorrect="off"
+		autocapitalize="off"
+		oninput="updateMatch(); save()"></label>
+<button onclick="test()">Otestovať vzor</label>
 </body>
 <script>
 	var madeOfAB = "sa skladajú z písmen <code>a</code> a <code>b</code>";
@@ -104,21 +115,21 @@
 		document.getElementById("statement").innerHTML = statements[problem];
 		document.getElementById("p" + problem.toString()).classList.add("current");
 		document.getElementById("pattern").value =
-			localStorage.getItem("pattern" + currentProblem.toString()) || "";
+				localStorage.getItem("pattern" + currentProblem.toString()) || "";
 		document.getElementById("text").value =
-			localStorage.getItem("text" + currentProblem.toString()) || "";
+				localStorage.getItem("text" + currentProblem.toString()) || "";
 		localStorage.setItem("lastOpened", currentProblem.toString());
 		updateMatch();
 	}
 
 	function save() {
 		localStorage.setItem(
-			"pattern" + currentProblem.toString(),
-			document.getElementById("pattern").value,
+				"pattern" + currentProblem.toString(),
+				document.getElementById("pattern").value,
 		);
 		localStorage.setItem(
-			"text" + currentProblem.toString(),
-			document.getElementById("text").value,
+				"text" + currentProblem.toString(),
+				document.getElementById("text").value,
 		);
 	}
 
