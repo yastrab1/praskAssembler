@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assembler Exercise</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+    <style>
+        :root {
+            --bg: #0f1115;
+            --panel: #151820;
+            --muted: #9aa4ad;
+            --text: #e6e9ee;
+            --accent: #4a91ff;
+            --border: #282d39;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .wrap {
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            height: 100vh;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 8px 12px;
+        }
+
+        .title {
+            color: var(--muted);
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns:10% 1fr 50%;
+            gap: 12px;
+            padding: 12px;
+            min-height: 0;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            gap: 10px;
+            overflow-y: auto;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        .controls {
+            color: var(--muted);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type=number], textarea {
+            width: 100%;
+            background: #0f131a;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px;
+            outline: none;
+        }
+
+        textarea {
+            flex: 1;
+            resize: vertical;
+            min-height: 220px;
+        }
+
+        .btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: #1d2330;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            border-color: #3a4254;
+        }
+
+        .pc {
+            color: var(--muted);
+        }
+
+        .programLineHighlight{
+            color: var(--accent);
+        }
+
+        canvas {
+            display: block;
+            height: auto;
+            background: #0f131a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .ex-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .ex-btn {
+            text-align: left;
+        }
+
+        .info {
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+            padding: 8px 12px;
+        }
+
+        @media (max-width: 1000px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .error {
+            color: red;
+        }
+        .finished{
+            background-color: forestgreen;
+        }
+    </style>
+    <script src="interpreter.js"></script>
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <div class="title">Assembler Interaktívka</div>
+    </header>
+    <div class="info">Vyber zadanie naľavo, v strede ho uvidíš a naľavo k nemu môžeš napísať program.
+    </div>
+    <div class="main">
+        <!-- Left: Exercise list -->
+        <section class="panel">
+            <div class="ex-list" aria-label="exercises">
+                <button class="ex-btn" type="button" id="T1" onclick="loadExercise('T1')">Tutoriál</button>
+                <button class="ex-btn" type="button" id="1" onclick="loadExercise('1')">#1</button>
+                <button class="ex-btn" type="button" id='2' onclick="loadExercise('2')">#2</button>
+                <button class="ex-btn" type="button" id='3' onclick="loadExercise('3')">#3</button>
+                <button class="ex-btn" type="button" id='4' onclick="loadExercise('4')">#4</button>
+                <button class="ex-btn" type="button" id="5" onclick="loadExercise('5')">#5</button>
+            </div>
+        </section>
+
+        <!-- Center: Exercise text -->
+        <section class="panel">
+            <div id="exerciseContent">Vyber zadanie</div>
+        </section>
+        <section class="panel">
+            <label for="program">Program:</label>
+            <div id="programContainer">
+                <textarea id="program" placeholder="Write your program here..." rows="20"></textarea>
+            </div>
+            <p class="error" id="error"></p>
+            <div class="controls">
+                <button onclick="runProgram()">Spusti program</button>
+                <button onclick="runLine()">Krok o riadok</button>
+                <button onclick="testProgram()">Otestuj program</button>
+                <button onclick="resetProgram()">Skoč na začiatok</button>
+                <button onclick="initMemory()">Vyčisti pamäť</button>
+                <button onclick="saveProgram()">Ulož program</button>
+                <button onclick="editProgram()">Zmeň program</button>
+                <button onclick="pauseProgram()">Zastav program</button>
+                <p id="pcDisplay"></p>
+            </div>
+            <canvas width="400" height="400" id="memoryCanvas" tabindex="0"></canvas>
+        </section>
+
+    </div>
+</div>
+</body>
+</html>
