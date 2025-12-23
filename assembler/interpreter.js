@@ -212,7 +212,7 @@ async function loadExercise(n) {
     if (!el) return;
     try {
         el.textContent = 'Loading exercise #' + n + '...';
-        const res = await fetch("/assembler/"+String(n) + '.md');
+        const res = await fetch(String(n) + '.md');
 
 
         el.innerHTML = marked.parse(await res.text());
@@ -342,7 +342,7 @@ async function testProgram() {
         return
     }
     setError("")
-    const testingManifest = await fetch("assembler/testingManifest.json").then(res => res.json());
+    const testingManifest = await fetch("/assembler/testingManifest.json").then(res => res.json());
     let myProblem = null;
     for (const problem of testingManifest["problems"]) {
         if (problem["name"] === currentOpenedProblem) {
